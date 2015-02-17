@@ -1,4 +1,4 @@
-package com.gigner.android.sunshine;
+package com.gigner.android.sunshine.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.gigner.android.sunshine.ForecastFragment;
+import com.gigner.android.sunshine.util.PreferenceUtil;
 
 
 public class MainActivity extends ActionBarActivity
@@ -21,8 +23,8 @@ public class MainActivity extends ActionBarActivity
     if ( savedInstanceState == null )
     {
       getSupportFragmentManager().beginTransaction()
-              .add( R.id.container, new ForecastFragment() )
-              .commit();
+          .add( R.id.container, new ForecastFragment() )
+          .commit();
     }
   }
 
@@ -46,7 +48,7 @@ public class MainActivity extends ActionBarActivity
     //noinspection SimplifiableIfStatement
     if ( id == R.id.action_settings )
     {
-      startActivity( new Intent( this, SettingsActivity.class) );
+      startActivity( new Intent( this, SettingsActivity.class ) );
       return true;
     }
     else if ( id == R.id.action_show_in_map )

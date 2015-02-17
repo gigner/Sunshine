@@ -1,4 +1,4 @@
-package com.gigner.android.sunshine;
+package com.gigner.android.sunshine.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 public class DetailActivity extends ActionBarActivity
 {
+  private final String LOG_TAG = DetailActivity.class.getSimpleName();
+
   Intent intent;
   String intentMessage;
 
@@ -27,17 +29,52 @@ public class DetailActivity extends ActionBarActivity
   protected void onCreate( Bundle savedInstanceState )
   {
     super.onCreate( savedInstanceState );
+    Log.d( LOG_TAG, "oCreate()" );
     setContentView( R.layout.activity_detail );
     if ( savedInstanceState == null )
     {
       getSupportFragmentManager().beginTransaction()
-              .add( R.id.container, new DetailFragment() )
-              .commit();
+          .add( R.id.container, new DetailFragment() )
+          .commit();
     }
     intent = getIntent();
     intentMessage = intent.getStringExtra( Intent.EXTRA_TEXT );
   }
 
+  @Override
+  protected void onDestroy()
+  {
+    Log.d( LOG_TAG, "onDestroy()" );
+    super.onDestroy();
+  }
+
+  @Override
+  protected void onStop()
+  {
+    Log.d( LOG_TAG, "onStop()" );
+    super.onStop();
+  }
+
+  @Override
+  protected void onStart()
+  {
+    super.onStart();
+    Log.d( LOG_TAG, "onStart()" );
+  }
+
+  @Override
+  protected void onPause()
+  {
+    Log.d( LOG_TAG, "onPause()" );
+    super.onPause();
+  }
+
+  @Override
+  protected void onResume()
+  {
+    super.onResume();
+    Log.d( LOG_TAG, "onResume()" );
+  }
 
   @Override
   public boolean onCreateOptionsMenu( Menu menu )
@@ -46,22 +83,23 @@ public class DetailActivity extends ActionBarActivity
     getMenuInflater().inflate( R.menu.menu_detail, menu );
     return true;
   }
-/*
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate menu resource file.
-    getMenuInflater().inflate(R.menu.share_menu, menu);
 
-    // Locate MenuItem with ShareActionProvider
-    MenuItem item = menu.findItem(R.id.menu_item_share);
+  /*
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+      // Inflate menu resource file.
+      getMenuInflater().inflate(R.menu.share_menu, menu);
 
-    // Fetch and store ShareActionProvider
-    mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+      // Locate MenuItem with ShareActionProvider
+      MenuItem item = menu.findItem(R.id.menu_item_share);
 
-    // Return true to display menu
-    return true;
-}
- */
+      // Fetch and store ShareActionProvider
+      mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
+      // Return true to display menu
+      return true;
+  }
+   */
   @Override
   public boolean onOptionsItemSelected( MenuItem item )
   {
@@ -73,7 +111,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
     //noinspection SimplifiableIfStatement
     if ( id == R.id.action_settings )
     {
-      startActivity( new Intent( this, SettingsActivity.class) );
+      startActivity( new Intent( this, SettingsActivity.class ) );
       return true;
     }
 
@@ -101,10 +139,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
     {
       inflater.inflate( R.menu.detailfragment, menu );
 
-      MenuItem item = menu.findItem(R.id.action_share );
+      MenuItem item = menu.findItem( R.id.action_share );
 
-      ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider( item );
-      if (shareActionProvider != null)
+      ShareActionProvider shareActionProvider = ( ShareActionProvider ) MenuItemCompat.getActionProvider( item );
+      if ( shareActionProvider != null )
       {
         shareActionProvider.setShareIntent( createShareIntent() );
       }
@@ -124,7 +162,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
       if ( intent != null && intent.hasExtra( Intent.EXTRA_TEXT ) )
       {
         forecastString = intent.getStringExtra( Intent.EXTRA_TEXT );
-        ((TextView)rootView.findViewById( R.id.detail_text )).setText( forecastString );
+        ( ( TextView ) rootView.findViewById( R.id.detail_text ) ).setText( forecastString );
       }
 
       return rootView;

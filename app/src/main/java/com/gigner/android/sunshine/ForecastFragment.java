@@ -20,6 +20,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.gigner.android.sunshine.activity.DetailActivity;
+import com.gigner.android.sunshine.util.PreferenceUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +49,7 @@ public class ForecastFragment extends Fragment
   }
 
   @Override
-  public void onCreate( Bundle savedInstanceState )
+  public void onCreate( final Bundle savedInstanceState )
   {
     super.onCreate( savedInstanceState );
     setHasOptionsMenu( true );
@@ -58,10 +60,10 @@ public class ForecastFragment extends Fragment
                             final Bundle savedInstanceState )
   {
     forecastAdapter =
-            new ArrayAdapter< String >( getActivity(),
-                    R.layout.list_item_forcast, R.id.list_item_forcast_textview, new ArrayList< String >() );
+        new ArrayAdapter< String >( getActivity(),
+            R.layout.list_item_forcast, R.id.list_item_forcast_textview, new ArrayList< String >() );
     final View rootView = inflater.inflate( R.layout.fragment_main, container, false );
-    final ListView listView = (ListView) rootView.findViewById( R.id.listview_forecast );
+    final ListView listView = ( ListView ) rootView.findViewById( R.id.listview_forecast );
     listView.setAdapter( forecastAdapter );
 
     listView.setOnItemClickListener( new AdapterView.OnItemClickListener()
@@ -80,7 +82,7 @@ public class ForecastFragment extends Fragment
 
 
   @Override
-  public boolean onOptionsItemSelected( MenuItem item )
+  public boolean onOptionsItemSelected( final MenuItem item )
   {
     boolean result = false;
     switch ( item.getItemId() )
@@ -156,12 +158,12 @@ public class ForecastFragment extends Fragment
         // Construct the URL for the OpenWeatherMap query
         // Possible parameters are available at OWM's forecast API page, at
         // http://openweathermap.org/API#forecast
-        final String uri = buildForcastUri( params[0], "7" );
+        final String uri = buildForcastUri( params[ 0 ], "7" );
         URL url = new URL( uri );
         Log.d( LOG_TAG, "URI: " + uri );
 
         // Create the request to OpenWeatherMap, and open the connection
-        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection = ( HttpURLConnection ) url.openConnection();
         urlConnection.setRequestMethod( "GET" );
         urlConnection.connect();
 
@@ -191,17 +193,20 @@ public class ForecastFragment extends Fragment
         }
         forecastJsonStr = buffer.toString();
         result = getWeatherDataFromJson( forecastJsonStr, 7 );
-      } catch ( IOException e )
+      }
+      catch ( IOException e )
       {
         Log.e( LOG_TAG, "Error ", e );
         // If the code didn't successfully get the weather data, there's no point in attempting
         // to parse it.
         forecastJsonStr = null;
-      } catch ( JSONException e )
+      }
+      catch ( JSONException e )
       {
         Log.e( LOG_TAG, "Error ", e );
         forecastJsonStr = null;
-      } finally
+      }
+      finally
       {
         if ( urlConnection != null )
         {
@@ -212,7 +217,8 @@ public class ForecastFragment extends Fragment
           try
           {
             reader.close();
-          } catch ( final IOException e )
+          }
+          catch ( final IOException e )
           {
             Log.e( LOG_TAG, "Error closing stream", e );
           }
@@ -228,11 +234,11 @@ public class ForecastFragment extends Fragment
       final Uri.Builder builder = new Uri.Builder();
       // "http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7"
       return builder.scheme( "http" ).authority( "api.openweathermap.org" ).appendPath( "data" )
-              .appendPath( "2.5" ).appendPath( "forecast" ).appendPath( "daily" )
-              .appendQueryParameter( "q", postCode )
-              .appendQueryParameter( "mode", "json" )
-              .appendQueryParameter( "units", "metric" )
-              .appendQueryParameter( "cnt", daysAhead ).build().toString();
+          .appendPath( "2.5" ).appendPath( "forecast" ).appendPath( "daily" )
+          .appendQueryParameter( "q", postCode )
+          .appendQueryParameter( "mode", "json" )
+          .appendQueryParameter( "units", "metric" )
+          .appendQueryParameter( "cnt", daysAhead ).build().toString();
     }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
@@ -257,7 +263,8 @@ public class ForecastFragment extends Fragment
       {
         high = ( high * 1.8 ) + 32;
         low = ( low * 1.8 ) + 32;
-      } else if ( !unitType.equals( getString( R.string.pref_units_metric ) ) )
+      }
+      else if ( !unitType.equals( getString( R.string.pref_units_metric ) ) )
       {
         Log.d( LOG_TAG, "Unit type not found: " + unitType );
       }
@@ -278,7 +285,7 @@ public class ForecastFragment extends Fragment
      * into an Object hierarchy for us.
      */
     private String[] getWeatherDataFromJson( String forecastJsonStr, int numDays )
-            throws JSONException
+        throws JSONException
     {
       // These are the names of the JSON objects that need to be extracted.
       final String OWM_LIST = "list";
@@ -308,7 +315,7 @@ public class ForecastFragment extends Fragment
       // now we work exclusively in UTC
       dayTime = new Time();
 
-      String[] resultStrs = new String[numDays];
+      String[] resultStrs = new String[ numDays ];
 
       // Data is fetched in Celsius by default.
       // If user prefers to see in Fahrenheit, convert the values here.
@@ -316,10 +323,10 @@ public class ForecastFragment extends Fragment
       // change this option without us having to re-fetch the data once
       // we start storing the values in a database.
       SharedPreferences sharedPrefs =
-              PreferenceManager.getDefaultSharedPreferences( getActivity() );
+          PreferenceManager.getDefaultSharedPreferences( getActivity() );
       String unitType = sharedPrefs.getString(
-              getString( R.string.pref_units_key ),
-              getString( R.string.pref_units_metric ) );
+          getString( R.string.pref_units_key ),
+          getString( R.string.pref_units_metric ) );
 
       for ( int i = 0; i < weatherArray.length(); i++ )
       {
@@ -350,7 +357,7 @@ public class ForecastFragment extends Fragment
         double low = temperatureObject.getDouble( OWM_MIN );
 
         highAndLow = formatHighLows( high, low, unitType );
-        resultStrs[i] = day + " - " + description + " - " + highAndLow;
+        resultStrs[ i ] = day + " - " + description + " - " + highAndLow;
       }
       return resultStrs;
     }
